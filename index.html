@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="musicPlayer">
+<head>
+	<title>Music Player</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="reset.css"></link>
+	<link rel="stylesheet" type="text/css" href="style.css"></link>
+</head>
+<body ng-controller="musicCtrl" ng-init="init()" ng-cloak> 
+<section id="playlist" class="left">
+	<header>PlayList</header>
+	<ul class="songList noselect">
+		<li class="song" ng-repeat="each in playlist" ng-class={'playing':$first} ng-dblclick="skipSong($index)">
+			{{each.song.name}} | {{each.album}} | {{each.song.length | date:'mm:ss'}} 
+		</li>
+	</ul>			
+</section>
+<section id="library" class="right">
+	<header>Library</header>
+	<div class="songsWrapper">
+		<h1>{{currentAlbum.name}}</h1>
+		<button ng-click="addAlbum()" id="addAlbum">add album</button>
+		<ul class="songList noselect">
+			<li class="song" ng-repeat="song in currentAlbum.songs" ng-dblclick="playSong(currentAlbum.name,song)">
+				{{song.name}} | {{song.length | date:'mm:ss'}}
+				<button class="queueButton right" ng-click="queueSong(currentAlbum.name,song)">&#43;</button>
+			</li>
+		</ul>
+	</div> 
+	<div class="buttonWrapper">
+		<button class="albumButton" ng-click="changeAlbum('prev')"><</button>
+		<button class="albumButton" ng-click="changeAlbum('next')">></button>
+	</div>
+</section>
+<footer id="controls">
+	<button class="controlButton trackButton mirror" ng-click="previous()" >&#9654;&#9654;</button>
+	<button class="controlButton" id="playButton" ng-if="playSymbol" ng-click="changePlaySymbol()">&#9654;</button>
+	<button class="controlButton"  id="pauseButton" ng-if="!playSymbol"ng-click="changePlaySymbol()">&#10073;&#10073;</button>
+	<button class="controlButton trackButton" ng-click="skipSong(1)">&#9654;&#9654;</button>
+	<span ng-if="currentSong"> 
+		{{currentSong.song.name}} | {{currentSong.album}} | {{currentSong.song.length | date:'mm:ss'}}
+	</span>
+	<progress ng-if="currentSong" max="{{playlist[0].song.length}}" value="{{currentSong.song.length}}" 
+	ng-click="position($event)"></progress>
+	<span ng-if="currentSong"> 
+		{{playlist[0].song.length - currentSong.song.length | date:'mm:ss'}}
+	</span>
+</footer>
+</body>
+<script type="text/javascript" src="music_player.js"></script>
+</html>
